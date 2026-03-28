@@ -20,7 +20,35 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "uid obrigatório" });
     }
 
+    // =========================
+    // 🔥 IP + GEO
+    // =========================
+
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.socket?.remoteAddress ||
+      "";
+
+    let geo = {};
+
+    try {
+      const geoRes = await fetch(`https://ipinfo.io/${ip}/json`);
+      geo = await geoRes.json();
+    } catch (e) {
+      console.log("erro ao pegar geo", e);
+    }
+
+    const loc = JSON.stringify({
+      ip,
+      city: geo.city || "",
+      region: geo.region || "",
+      country: geo.country || ""
+    });
+
+    // =========================
     // GOOGLE AUTH
+    // =========================
+
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -33,7 +61,10 @@ export default async function handler(req, res) {
 
     const spreadsheetId = "1XyxmVjpo1PaU_ca9nM1sJ3J8GkHXHnFfG09N-EKekU4";
 
+    // =========================
     // BUSCAR
+    // =========================
+
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: "dados!A:A",
@@ -45,23 +76,23 @@ export default async function handler(req, res) {
 
     if (rowIndex === -1) {
 
-      // APPEND
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: "dados!A:J",
+        range: "dados!A:K",
         valueInputOption: "USER_ENTERED",
         requestBody: {
           values: [[
-            uid,
-            new Date().toISOString(),
-            new Date().toISOString(),
-            "",
-            JSON.stringify(utms),
-            JSON.stringify(browser),
-            "{}",
-            "",
-            "{}",
-            0
+            uid,                          // A
+            new Date().toISOString(),     // B
+            new Date().toISOString(),     // C
+            "",                           // D fbclid
+            JSON.stringify(utms),         // E utms
+            loc,                          // F loc ✅
+            JSON.stringify(browser),      // G browser ✅
+            "{}",                         // H behavior
+            "{}",                         // I events
+            "",                           // J payment
+            0                             // K score
           ]],
         },
       });
@@ -70,7 +101,6 @@ export default async function handler(req, res) {
 
       const realRow = rowIndex + 1;
 
-      // UPDATE
       await sheets.spreadsheets.values.update({
         spreadsheetId,
         range: `dados!C${realRow}`,
