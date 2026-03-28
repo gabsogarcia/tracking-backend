@@ -1,10 +1,24 @@
 {
   "name": "tracking-backend",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabsogarcia/tracking-backend.git"
+  },
+  "keywords": [],
+  "author": "",
   "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gabsogarcia/tracking-backend/issues"
+  },
+  "homepage": "https://github.com/gabsogarcia/tracking-backend#readme",
   "dependencies": {
-    "googleapis": "^144.0.0"
+    "googleapis": "^171.4.0"
   }
 }
