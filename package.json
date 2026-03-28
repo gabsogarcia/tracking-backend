@@ -1,17 +1,10 @@
 {
   "name": "tracking-backend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "scripts": {
-  },
-  "keywords": [],
-  "author": "",
+  "scripts": {},
   "license": "ISC",
   "dependencies": {
-    "googleapis": "^latest"
-  },
-  "devDependencies": {
-    "vercel": "^latest"
+    "googleapis": "^144.0.0"
   }
 }
