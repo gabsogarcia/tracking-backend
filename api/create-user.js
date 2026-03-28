@@ -14,7 +14,13 @@ const sheets = google.sheets({ version: "v4", auth });
 
 const spreadsheetId = "1XyxmVjpo1PaU_ca9nM1sJ3J8GkHXHnFfG09N-EKekU4";
 
-const { uid, utms, browser } = req.body;
+const body = req.body || {};
+
+const { uid, utms, browser } = body;
+
+if (!uid) {
+  return res.status(400).json({ error: "uid obrigatório" });
+}
 
 const response = await sheets.spreadsheets.values.get({
   spreadsheetId,
