@@ -78,8 +78,9 @@ export default async function handler(req, res) {
 
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: "dados!A:K",
+        range: "dados!A1",
         valueInputOption: "USER_ENTERED",
+        insertDataOption: "INSERT_ROWS",
         requestBody: {
           values: [[
             uid,                          // A
